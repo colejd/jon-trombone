@@ -33,6 +33,9 @@ class Glottis {
 
         this.output;
 
+        this.addPitchVariance = true;
+        this.addTensenessVariance = true;
+
     }
     
     init() {
@@ -95,9 +98,12 @@ class Glottis {
     
     finishBlock() {
         var vibrato = 0;
-        vibrato += this.vibratoAmount * Math.sin(2*Math.PI * this.totalTime *this.vibratoFrequency);          
-        vibrato += 0.02 * noise.simplex1(this.totalTime * 4.07);
-        vibrato += 0.04 * noise.simplex1(this.totalTime * 2.15);
+        if (this.addPitchVariance) {
+            // Add small imperfections to the vocal output
+            vibrato += this.vibratoAmount * Math.sin(2*Math.PI * this.totalTime *this.vibratoFrequency);          
+            vibrato += 0.02 * noise.simplex1(this.totalTime * 4.07);
+            vibrato += 0.04 * noise.simplex1(this.totalTime * 2.15);
+        }
         if (this.trombone.autoWobble)
         {
             vibrato += 0.2 * noise.simplex1(this.totalTime * 0.98);
@@ -110,8 +116,11 @@ class Glottis {
         this.oldFrequency = this.newFrequency;
         this.newFrequency = this.smoothFrequency * (1+vibrato);
         this.oldTenseness = this.newTenseness;
-        this.newTenseness = this.UITenseness
-            + 0.1*noise.simplex1(this.totalTime*0.46)+0.05*noise.simplex1(this.totalTime*0.36);
+        if (this.addTensenessVariance) {
+            this.newTenseness = this.UITenseness + 0.1*noise.simplex1(this.totalTime*0.46)+0.05*noise.simplex1(this.totalTime*0.36);
+        } else {
+            this.newTenseness = this.UITenseness;
+        }
         if (!this.isTouched && this.trombone.alwaysVoice) this.newTenseness += (3-this.UITenseness)*(1-this.intensity);
         
         if (this.isTouched || this.trombone.alwaysVoice){

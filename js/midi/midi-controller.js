@@ -30,6 +30,7 @@ class MidiController {
      * Loads and parses a MIDI file.
      */
     LoadSong(path, callback){
+        this.Stop();
         this.midi = null;
         MidiConvert.load(path, (midi) => {
             console.log("MIDI loaded.");
@@ -40,6 +41,7 @@ class MidiController {
     }
 
     LoadSongDirect(file){
+        this.Stop();
         this.midi = MidiConvert.parse(file);
         console.log("MIDI loaded.");
         console.log(this.midi);
@@ -61,10 +63,13 @@ class MidiController {
     }
 
     PlaySong(track = 5){
+        if(this.playing){
+            return;
+        }
 
         // If no song is specified, load a song
         if(!this.midi){
-            console.log("No MIDI is loaded.");
+            console.log("No MIDI is loaded. Loading an example...");
             this.LoadSong('../resources/midi/un-owen-was-her.mid', () => {
                 this.PlaySong();
             });
@@ -77,6 +82,8 @@ class MidiController {
         this.currentTrack = track;
         this.clock.start();
         this.playing = true;
+
+        console.log("Playback started.");
 
     }
 
@@ -96,6 +103,7 @@ class MidiController {
      * Restarts the playback.
      */
     Restart(){
+        console.log("Playback moved to beginning.");
         this.clock = new THREE.Clock();
     }
 
@@ -103,6 +111,10 @@ class MidiController {
      * Stops playback.
      */
     Stop() {
+        if(!this.playing){
+            return;
+        }
+        console.log("Playback stopped.");
         this.clock.stop();
         this.playing = false;
         this.ExitSingMode();
@@ -112,26 +124,45 @@ class MidiController {
      * Sets up the trombone for singing.
      */
     EnterSingMode(){
-        this.oldAutoWobble = this.controller.trombone.autoWobble;
+        if(this.backup_settings){
+            return;
+        }
+
+        this.backup_settings = {};
+
+        this.backup_settings["autoWobble"] = this.controller.trombone.autoWobble;
         this.controller.trombone.autoWobble = false;
 
-        this.oldUseWhiteNoise = this.controller.trombone.AudioSystem.useWhiteNoise;
-        this.controller.trombone.AudioSystem.useWhiteNoise = false;
+        this.backup_settings["addPitchVariance"] = this.controller.trombone.Glottis.addPitchVariance;
+        this.controller.trombone.Glottis.addPitchVariance = false;
 
-        this.oldVibratoFrequency = this.controller.trombone.Glottis.vibratoFrequency;
+        this.backup_settings["addTensenessVariance"] = this.controller.trombone.Glottis.addTensenessVariance;
+        this.controller.trombone.Glottis.addTensenessVariance = false;
+
+        this.backup_settings["vibratoFrequency"] = this.controller.trombone.Glottis.vibratoFrequency;
         this.controller.trombone.Glottis.vibratoFrequency = 0;
 
-        this.oldFrequency = this.controller.trombone.Glottis.UIFrequency;
+        this.backup_settings["frequency"] = this.controller.trombone.Glottis.UIFrequency;
+
+        this.backup_settings["loudness"] = this.controller.trombone.Glottis.loudness;
     }
 
     /**
      * Restores the trombone to the state it was in before singing.
      */
     ExitSingMode(){
-        this.controller.trombone.autoWobble = this.oldAutoWobble;
-        this.controller.trombone.AudioSystem.useWhiteNoise = this.oldUseWhiteNoise;
-        this.controller.trombone.Glottis.vibratoFrequency = this.oldVibratoFrequency;
-        this.controller.trombone.Glottis.UIFrequency = this.oldFrequency;
+        if(!this.backup_settings) {
+            return;
+        }
+        
+        this.controller.trombone.autoWobble = this.backup_settings["autoWobble"];
+        this.controller.trombone.Glottis.addPitchVariance = this.backup_settings["addPitchVariance"];
+        this.controller.trombone.Glottis.addTensenessVariance = this.backup_settings["addTensenessVariance"];
+        this.controller.trombone.Glottis.vibratoFrequency = this.backup_settings["vibratoFrequency"];
+        this.controller.trombone.Glottis.UIFrequency = this.backup_settings["frequency"];
+        this.controller.trombone.Glottis.loudness = this.backup_settings["loudness"];
+
+        this.backup_settings = null;
     }
 
 }

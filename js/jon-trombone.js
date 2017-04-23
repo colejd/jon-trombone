@@ -28,8 +28,6 @@ class JonTrombone {
         // Set up clock for timing
         this.clock = new THREE.Clock();
 
-        //window.scene = this.scene;
-
         let startDelayMS = 1000;
         this.trombone = new PinkTrombone();
         setTimeout(()=> {
@@ -50,11 +48,11 @@ class JonTrombone {
         this.jawFlapSpeed = 20.0;
         this.jawOpenOffset = 0.19;
         this.moveJaw = false;
+        this.legato = false;
+        this.flapWhileSinging = false;
 
         this.midiController = new MidiController(this);
         let dropArea = new MidiDropArea(this);
-        
-        //this.Sing('../resources/midi/dragon-roost-island.mid');
 
         this.SetUpThree();
         this.SetUpScene();
@@ -128,20 +126,23 @@ class JonTrombone {
                 // Do the note
                 if(note === undefined){
                     // Note off
-                    this.trombone.Glottis.loudness = 0;
+                    if (!this.legato) this.trombone.Glottis.loudness = 0;
                     // Close jaw
                     this.jaw.position.z = this.jawShutZ;
                     this.trombone.TractUI.SetLipsClosed(1);
+
                 } else {
                     // Note on
-                    this.trombone.Glottis.loudness = 1;
+                    //this.trombone.Glottis.loudness = 1;
                     // Play frequency
                     let freq = this.midiController.MIDIToFrequency(note.midi);
                     //console.log(freq);
                     this.trombone.Glottis.UIFrequency = freq;
+                    this.trombone.Glottis.loudness = note.velocity;
                     // Open jaw
                     this.jaw.position.z = this.jawShutZ + this.jawOpenOffset;
                     this.trombone.TractUI.SetLipsClosed(0);
+
                 }
 
                 this.lastNote = note;
@@ -149,7 +150,7 @@ class JonTrombone {
 
         }
 
-        if(this.jaw && this.moveJaw && !this.midiController.playing){
+        if(this.jaw && this.moveJaw && (!this.midiController.playing || this.flapWhileSinging)){
             let time = this.clock.getElapsedTime();// % 60;
 
             // Move the jaw
@@ -158,10 +159,12 @@ class JonTrombone {
 
             // Make the audio match the jaw position
             this.trombone.TractUI.SetLipsClosed(1.0 - percent);
+
         }
 
         // Render
         this.renderer.render(this.scene, this.camera);
+
     }
 
 }
