@@ -22,8 +22,9 @@
             text-align: center;
             z-index: 100;
             display:block;
+            pointer-events: none;
         }
-        .info a{ color: #00f; font-weight: bold; text-decoration: underline; cursor: pointer }
+        .info a{ color: #00f; font-weight: bold; text-decoration: underline; cursor: pointer; pointer-events: initial; }
     </style>
 
     <style>
@@ -40,9 +41,8 @@
 
     <!-- three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
-    <!-- Dependencies -->
+    <!-- Optional Modules -->
     <script src="../dist/dependencies/OrbitControls.js"></script>
-    <!-- Optional GUI -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.4/dat.gui.min.js"></script>
 
 </head>

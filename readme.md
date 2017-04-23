@@ -24,5 +24,9 @@ of an integration, see the [test page](/testpage/index.html).
 Jon-Trombone will use DAT.GUI if it's available to give you a way to fiddle with the parameters.
 
 
+# Credit
+Test MIDI comes from [here](http://www.vgmusic.com/file/04c49ca1e71a4d0cf0c56cf3d9033cdd.html).
+
+
 # License
 MIT License. See [license.md](license.md).

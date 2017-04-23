@@ -1,10 +1,14 @@
 import { ModelLoader } from "./utils/model-loader.js";
 import { PinkTrombone } from "./pink-trombone/pink-trombone.js";
+import { MidiController } from "./midi/midi-controller.js";
+import { MidiDropArea } from "./midi/midi-drop-area.js";
 
 class JonTrombone {
+
     constructor(container) {
         this.container = container;
         this.container.style.position = "relative";
+        this.container.style.cursor = "default";
 
         // Set up renderer and embed in container
         this.renderer = new THREE.WebGLRenderer( { alpha: true } );
@@ -17,6 +21,9 @@ class JonTrombone {
         let aspect = this.container.offsetWidth / this.container.offsetHeight;
         this.camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 100 );
         this.scene = new THREE.Scene();
+
+        // Export scene for three js inspector
+        //window.scene = this.scene;
 
         // Set up clock for timing
         this.clock = new THREE.Clock();
@@ -31,18 +38,23 @@ class JonTrombone {
         }, startDelayMS);
 
         // Mute button for trombone
-        let button = document.createElement("button");
-        button.innerHTML = "Mute";
-        button.style.cssText = "position: absolute; display: block; top: 0; left: 0;";
-        this.container.appendChild(button);
-        button.addEventListener ("click", () => {
-            this.trombone.ToggleMute();
-            button.innerHTML = this.trombone.muted ? "Unmute" : "Mute";
-        });
+        // let button = document.createElement("button");
+        // button.innerHTML = "Mute";
+        // button.style.cssText = "position: absolute; display: block; top: 0; left: 0;";
+        // this.container.appendChild(button);
+        // button.addEventListener ("click", () => {
+        //     this.trombone.ToggleMute();
+        //     button.innerHTML = this.trombone.muted ? "Unmute" : "Mute";
+        // });
 
         this.jawFlapSpeed = 20.0;
         this.jawOpenOffset = 0.19;
         this.moveJaw = false;
+
+        this.midiController = new MidiController(this);
+        let dropArea = new MidiDropArea(this);
+        
+        //this.Sing('../resources/midi/dragon-roost-island.mid');
 
         this.SetUpThree();
         this.SetUpScene();
@@ -51,13 +63,23 @@ class JonTrombone {
         this.OnUpdate();
     }
 
+    /**
+     * Set up non-scene config for Three.js
+     */
     SetUpThree() {
-        // Add orbit controls
-        this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
-        this.controls.target.set( 0, 0, 0 );
-        this.controls.update();
+        if(THREE.OrbitControls !== undefined){
+            // Add orbit controls
+            this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
+            this.controls.target.set( 0, 0, 0 );
+            this.controls.update();
+        } else {
+            console.warn("No THREE.OrbitControls detected. Include to allow interaction with the model.");
+        }
     }
 
+    /**
+     * Populates and configures objects within the scene.
+     */
     SetUpScene() {
 
         // Set camera position
@@ -91,11 +113,43 @@ class JonTrombone {
 
     }
 
+    /**
+     * Called every frame. Continues indefinitely after being called once.
+     */
     OnUpdate() {
         let deltaTime = this.clock.getDelta();
         requestAnimationFrame( this.OnUpdate.bind(this) );
 
-        if(this.jaw && this.moveJaw){
+        if(this.midiController.playing){
+
+            let note = this.midiController.GetPitch();
+            if(note != this.lastNote){
+                //console.log(note);
+                // Do the note
+                if(note === undefined){
+                    // Note off
+                    this.trombone.Glottis.loudness = 0;
+                    // Close jaw
+                    this.jaw.position.z = this.jawShutZ;
+                    this.trombone.TractUI.SetLipsClosed(1);
+                } else {
+                    // Note on
+                    this.trombone.Glottis.loudness = 1;
+                    // Play frequency
+                    let freq = this.midiController.MIDIToFrequency(note.midi);
+                    //console.log(freq);
+                    this.trombone.Glottis.UIFrequency = freq;
+                    // Open jaw
+                    this.jaw.position.z = this.jawShutZ + this.jawOpenOffset;
+                    this.trombone.TractUI.SetLipsClosed(0);
+                }
+
+                this.lastNote = note;
+            }
+
+        }
+
+        if(this.jaw && this.moveJaw && !this.midiController.playing){
             let time = this.clock.getElapsedTime();// % 60;
 
             // Move the jaw
@@ -103,7 +157,7 @@ class JonTrombone {
             this.jaw.position.z = this.jawShutZ + (percent * this.jawOpenOffset);
 
             // Make the audio match the jaw position
-            this.trombone.TractUI.Buh(1.0 - percent);
+            this.trombone.TractUI.SetLipsClosed(1.0 - percent);
         }
 
         // Render

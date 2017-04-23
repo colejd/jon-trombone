@@ -66,7 +66,11 @@ class TractUI
         }
     }
 
-    Buh(progress) {
+    /**
+     * Sets the lips of the modeled tract to be closed by the specified amount.
+     * @param {number} progress Percentage closed (number between 0 and 1)
+     */
+    SetLipsClosed(progress) {
 
         let Tract = this.trombone.Tract;
         
