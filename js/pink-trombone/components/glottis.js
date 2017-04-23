@@ -104,11 +104,13 @@ class Glottis {
             vibrato += 0.02 * noise.simplex1(this.totalTime * 4.07);
             vibrato += 0.04 * noise.simplex1(this.totalTime * 2.15);
         }
+        
         if (this.trombone.autoWobble)
         {
             vibrato += 0.2 * noise.simplex1(this.totalTime * 0.98);
             vibrato += 0.4 * noise.simplex1(this.totalTime * 0.5);
         }
+
         if (this.UIFrequency>this.smoothFrequency) 
             this.smoothFrequency = Math.min(this.smoothFrequency * 1.1, this.UIFrequency);
         if (this.UIFrequency<this.smoothFrequency) 
@@ -116,16 +118,16 @@ class Glottis {
         this.oldFrequency = this.newFrequency;
         this.newFrequency = this.smoothFrequency * (1+vibrato);
         this.oldTenseness = this.newTenseness;
-        if (this.addTensenessVariance) {
+
+        if (this.addTensenessVariance)
             this.newTenseness = this.UITenseness + 0.1*noise.simplex1(this.totalTime*0.46)+0.05*noise.simplex1(this.totalTime*0.36);
-        } else {
+        else
             this.newTenseness = this.UITenseness;
-        }
+
         if (!this.isTouched && this.trombone.alwaysVoice) this.newTenseness += (3-this.UITenseness)*(1-this.intensity);
         
-        if (this.isTouched || this.trombone.alwaysVoice){
+        if (this.isTouched || this.trombone.alwaysVoice)
             this.intensity += 0.13;
-        }
         this.intensity = Math.clamp(this.intensity, 0, 1);
     }
     
