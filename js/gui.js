@@ -1,17 +1,16 @@
 
-class GUI {
+export class GUI {
 
     /**
      * Creates and attaches a GUI to the page if DAT.GUI is included.
      */
     static Init(controller){
-            if(typeof(dat) === "undefined"){
+        if(typeof(dat) === "undefined"){
             console.warn("No DAT.GUI instance found. Import on the page to use!");
             return;
         }
 
-        var gui = new dat.GUI({
-        });
+        var gui = new dat.GUI();
 
         var jon = controller;
 
@@ -49,5 +48,3 @@ class GUI {
     }
 
 }
-
-export { GUI };

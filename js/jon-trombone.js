@@ -29,9 +29,10 @@ class JonTrombone {
         this.clock = new THREE.Clock();
 
         let startDelayMS = 1000;
-        this.trombone = new PinkTrombone();
+        this.trombone = new PinkTrombone(this);
         setTimeout(()=> {
             this.trombone.StartAudio();
+            //this.trombone.SetMute(true);
             this.moveJaw = true;
         }, startDelayMS);
 
@@ -120,21 +121,16 @@ class JonTrombone {
 
         if(this.midiController.playing){
 
-            let note = this.midiController.GetPitch();
-            if(note != this.lastNote){
-                //console.log(note);
+            this.notes = this.midiController.GetPitches();
+            if(this.notes != this.lastNotes){
                 // Do the note
-                if(note === undefined){
-                    // Note off
-                    if (!this.legato) this.trombone.Glottis.loudness = 0;
-                    // Close jaw
-                    this.jaw.position.z = this.jawShutZ;
-                    this.trombone.TractUI.SetLipsClosed(1);
-
-                } else {
+                if(this.notes !== undefined && this.notes.length != 0){ 
                     // Note on
-                    //this.trombone.Glottis.loudness = 1;
                     // Play frequency
+                    let note = this.notes[0];
+                    if(this.notes.length > 1){
+                        //console.log ("chord");
+                    }
                     let freq = this.midiController.MIDIToFrequency(note.midi);
                     //console.log(freq);
                     this.trombone.Glottis.UIFrequency = freq;
@@ -143,9 +139,16 @@ class JonTrombone {
                     this.jaw.position.z = this.jawShutZ + this.jawOpenOffset;
                     this.trombone.TractUI.SetLipsClosed(0);
 
+                } else { 
+                    // Note off
+                    if (!this.legato) this.trombone.Glottis.loudness = 0;
+                    // Close jaw
+                    this.jaw.position.z = this.jawShutZ;
+                    this.trombone.TractUI.SetLipsClosed(1);
+
                 }
 
-                this.lastNote = note;
+                this.lastNotes = this.notes;
             }
 
         }

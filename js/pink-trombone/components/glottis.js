@@ -33,7 +33,9 @@ class Glottis {
 
         this.output;
 
+        /// Allow pitch to wobble over time
         this.addPitchVariance = true;
+        /// Allow tenseness to wobble over time
         this.addTensenessVariance = true;
 
     }

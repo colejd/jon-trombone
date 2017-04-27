@@ -18,9 +18,11 @@ class TractUI
         this.noseOffset = 0.8;
         this.gridOffset = 1.7;
 
-        // Jon's UI options
+        /// Final openness of the mouth (closer to 0 is more closed)
         this.target = 0.1;
+        /// Index in the throat array to move to target
         this.index = 42;
+        /// Number of throat segments to close around the index
         this.radius = 0;
     }
     

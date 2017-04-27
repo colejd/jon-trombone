@@ -6,8 +6,9 @@ import { Tract } from "./components/tract.js";
 import { TractUI } from "./components/tract-ui.js";
 
 class PinkTrombone {
-    constructor(){
-
+    constructor(controller){
+        this.controller = controller;
+        
         this.sampleRate = 0;
         this.time = 0;
         this.alwaysVoice = true;

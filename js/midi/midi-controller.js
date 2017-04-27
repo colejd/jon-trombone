@@ -21,7 +21,7 @@ class MidiController {
         this.playing = false;
         this.currentTrack = 5;
 
-        this.baseFreq = 110; //110 is A2
+        this.baseFreq = 440; //110 is A4
 
         this.clock = new THREE.Clock(false);
     }
@@ -62,6 +62,17 @@ class MidiController {
         });
     }
 
+    GetPitches(trackIndex = this.currentTrack){
+        let time = this.GetSongProgress();
+
+        // Constrain track specified to valid range
+        trackIndex = Math.min(trackIndex, this.midi.tracks.length - 1);
+        trackIndex = Math.max(trackIndex, 0);
+
+        return this.midi.tracks[trackIndex].notes.filter(item => 
+            item.noteOn <= time && time <= item.noteOff);
+    }
+
     PlaySong(track = 5){
         if(this.playing){
             return;
@@ -96,7 +107,7 @@ class MidiController {
      * @param {*} midiCode 
      */
     MIDIToFrequency(midiCode){
-        return this.baseFreq * Math.pow(2, (midiCode - 57) / 12);
+        return this.baseFreq * Math.pow(2, (midiCode - 69) / 12);
     }
 
     /**
