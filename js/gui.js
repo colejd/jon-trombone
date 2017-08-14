@@ -13,7 +13,7 @@ class GUI {
             align: "right",
             opacity: "0.95",
             useMenuBar: true
-        }, []);
+        });
 
         this.panel.Register({ 
             type: "checkbox", label: "Mute", 
