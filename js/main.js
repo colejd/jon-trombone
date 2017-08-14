@@ -1,6 +1,5 @@
 import { Detector } from "./utils/webgl-detect.js";
 import { JonTrombone } from "./jon-trombone.js";
-import { gui } from "./gui.js";
 
 // Optionally bundle three.js as part of the project
 //import THREELib from "three-js";
@@ -16,5 +15,4 @@ if ( !Detector.HasWebGL() ) {
 }
 else{
     let jonTrombone = new JonTrombone(container);
-    gui.Init(jonTrombone, container);
 }

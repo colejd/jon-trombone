@@ -3,10 +3,11 @@ import { PinkTrombone } from "./pink-trombone/pink-trombone.js";
 import { MidiController } from "./midi/midi-controller.js";
 import { MidiDropArea } from "./midi/midi-drop-area.js";
 import { TTSController } from "./tts/tts-controller.js";
+import { gui } from "./gui.js";
 
 class JonTrombone {
 
-    constructor(container) {
+    constructor(container, finishedCallback) {
         this.container = container;
         this.container.style.position = "relative";
         this.container.style.cursor = "default";
@@ -64,6 +65,8 @@ class JonTrombone {
 
         // Start the update loop
         this.OnUpdate();
+
+        gui.Init(this, this.container);
     }
 
     /**

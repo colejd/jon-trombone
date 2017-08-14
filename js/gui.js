@@ -63,8 +63,8 @@ class GUI {
             { type: "title", label: "Options" },
             { type: "range", label: "Track", object: jon.midiController, property: "currentTrack", min: 1, max: 20, step: 1 },
             { type: "range", label: "Base Frequency", object: jon.midiController, property: "baseFreq", min: 1, max: 2000, step: 1 },
-            { type: "checkbox", label: "Extreme Vibrato", object: jon.midiController, property: "flapWhileSinging" },
-            { type: "checkbox", label: "Legato", object: jon.midiController, property: "legato" },
+            { type: "checkbox", label: "Extreme Vibrato", object: jon, property: "flapWhileSinging" },
+            { type: "checkbox", label: "Legato", object: jon, property: "legato" },
         ], { folder: "MIDI" });
 
     }
