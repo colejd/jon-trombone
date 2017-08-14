@@ -30,6 +30,8 @@ class PinkTrombone {
 
         //this.StartAudio();
         //this.SetMute(true);
+
+        this.muted = false;
     }
 
     StartAudio() {

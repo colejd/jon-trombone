@@ -1,50 +1,74 @@
+let guify = require("guify");
 
-export class GUI {
+class GUI {
 
-    /**
-     * Creates and attaches a GUI to the page if DAT.GUI is included.
-     */
-    static Init(controller){
-        if(typeof(dat) === "undefined"){
-            console.warn("No DAT.GUI instance found. Import on the page to use!");
-            return;
-        }
+    Init(jon, container){
 
-        var gui = new dat.GUI();
+        this.panel = new guify.GUI({
+            title: "Jon-Trombone", 
+            theme: "dark", 
+            root: container,
+            width: "80%",
+            barMode: "above",
+            align: "right",
+            opacity: "0.95",
+            useMenuBar: true
+        }, []);
 
-        var jon = controller;
+        this.panel.Register({ 
+            type: "checkbox", label: "Mute", 
+            object: jon.trombone, property: "muted", 
+            onChange: (data) => {
+                jon.trombone.SetMute(data);
+            } 
+        });
 
-        gui.add(jon.trombone, 'ToggleMute');
+        // Jon folder
+        this.panel.Register({ type: "folder", label: "Jon" });
+        this.panel.Register([
+            { type: "checkbox", label: "Move Jaw", object: jon, property: "moveJaw" },
+            { type: "range", label: "Jaw Speed", object: jon, property: "jawFlapSpeed", min: 0, max: 100 },
+            { type: "range", label: "Jaw Range", object: jon, property: "jawOpenOffset", min: 0, max: 1 },
+        ], { folder: "Jon" });
 
-        var jonGUI = gui.addFolder("Jon");
-        jonGUI.add(jon, "moveJaw").listen();
-        jonGUI.add(jon, "jawFlapSpeed").min(0).max(100);
-        jonGUI.add(jon, "jawOpenOffset").min(0).max(1);
+        // Voice folder
+        this.panel.Register({ type: "folder", label: "Voice" });
+        this.panel.Register([
+            { type: "checkbox", label: "Wobble", object: jon.trombone, property: "autoWobble" },
+            { type: "checkbox", label: "Pitch Variance", object: jon.trombone.Glottis, property: "addPitchVariance" },
+            { type: "checkbox", label: "Tenseness Variance", object: jon.trombone.Glottis, property: "addTensenessVariance" },
+            { type: "range", label: "Tenseness", object: jon.trombone.Glottis, property: "UITenseness", min: 0, max: 1 },
+            { type: "range", label: "Vibrato", object: jon.trombone.Glottis, property: "vibratoAmount", min: 0, max: 0.5 },
+            { type: "range", label: "Frequency", object: jon.trombone.Glottis, property: "UIFrequency", min: 1, max: 1000, step: 1 },
+            { type: "range", label: "Loudness", object: jon.trombone.Glottis, property: "loudness", min: 0, max: 1 },
+        ], { folder: "Voice" });
 
-        var voiceGUI = gui.addFolder("Voice");
-        voiceGUI.add(jon.trombone, 'autoWobble');
-        voiceGUI.add(jon.trombone.Glottis, 'addPitchVariance').listen();
-        voiceGUI.add(jon.trombone.Glottis, 'addTensenessVariance').listen();
-        voiceGUI.add(jon.trombone.Glottis, 'UITenseness').min(0).max(1);
-        voiceGUI.add(jon.trombone.Glottis, 'vibratoAmount').min(0).max(0.5);
-        voiceGUI.add(jon.trombone.Glottis, 'UIFrequency').min(1).max(1000).listen();
-        voiceGUI.add(jon.trombone.Glottis, 'loudness').min(0).max(1).listen();
+        // Tract folder
+        this.panel.Register({ type: "folder", label: "Tract" });
+        this.panel.Register([
+            { type: "range", label: "Move Speed", object: jon.trombone.Tract, property: "movementSpeed", min: 1, max: 30, step: 1 },
+            { type: "range", label: "Velum Target", object: jon.trombone.Tract, property: "velumTarget", min: 0.001, max: 2 },
+            { type: "range", label: "Target", object: jon.trombone.TractUI, property: "target", min: 0.001, max: 1 },
+            { type: "range", label: "Index", object: jon.trombone.TractUI, property: "index", min: 0, max: 43, step: 1 },
+            { type: "range", label: "Radius", object: jon.trombone.TractUI, property: "radius", min: 0, max: 5, step: 1 },
+        ], { folder: "Tract" });
 
-        var tractGUI = gui.addFolder("Tract");
-        tractGUI.add(jon.trombone.Tract, 'movementSpeed').min(1).max(30).step(1);
-        tractGUI.add(jon.trombone.Tract, 'velumTarget').min(0.001).max(2);
-        tractGUI.add(jon.trombone.TractUI, 'target').min(0.001).max(1);
-        tractGUI.add(jon.trombone.TractUI, 'index').min(0).max(43).step(1);
-        tractGUI.add(jon.trombone.TractUI, 'radius').min(0).max(5).step(1);
+        // MIDI folder
+        this.panel.Register({ type: "folder", label: "MIDI" });
+        this.panel.Register([
+            { type: "title", label: "Controls" },
+            { type: "button", label: "Play", action: () => jon.midiController.PlaySong() },
+            { type: "button", label: "Stop", action: () => jon.midiController.Stop() },
+            { type: "button", label: "Restart", action: () => jon.midiController.Restart() },
+            { type: "title", label: "Options" },
+            { type: "range", label: "Track", object: jon.midiController, property: "currentTrack", min: 1, max: 20, step: 1 },
+            { type: "range", label: "Base Frequency", object: jon.midiController, property: "baseFreq", min: 1, max: 2000, step: 1 },
+            { type: "checkbox", label: "Extreme Vibrato", object: jon.midiController, property: "flapWhileSinging" },
+            { type: "checkbox", label: "Legato", object: jon.midiController, property: "legato" },
+        ], { folder: "MIDI" });
 
-        var songGUI = gui.addFolder("midi");
-        songGUI.add(jon.midiController, 'PlaySong');
-        songGUI.add(jon.midiController, 'Stop');
-        songGUI.add(jon.midiController, 'Restart');
-        songGUI.add(jon.midiController, 'currentTrack').min(0).max(20).step(1).listen();
-        songGUI.add(jon.midiController, 'baseFreq').min(1).max(2000);
-        songGUI.add(jon, 'flapWhileSinging');
-        songGUI.add(jon, 'legato').listen();
     }
 
 }
+
+export let gui = new GUI();
