@@ -56,6 +56,11 @@ class GUI {
         // MIDI folder
         this.panel.Register({ type: "folder", label: "MIDI" });
         this.panel.Register([
+            { type: "file", label: "MIDI File", fileReadFunc: "readAsBinaryString",
+                onChange: (data) => {
+                    jon.midiController.LoadSongDirect(data);
+                }
+            },
             { type: "title", label: "Controls" },
             { type: "button", label: "Play", action: () => jon.midiController.PlaySong() },
             { type: "button", label: "Stop", action: () => jon.midiController.Stop() },

@@ -1,7 +1,6 @@
 import { ModelLoader } from "./utils/model-loader.js";
 import { PinkTrombone } from "./pink-trombone/pink-trombone.js";
 import { MidiController } from "./midi/midi-controller.js";
-import { MidiDropArea } from "./midi/midi-drop-area.js";
 import { TTSController } from "./tts/tts-controller.js";
 import { gui } from "./gui.js";
 
@@ -55,7 +54,6 @@ class JonTrombone {
         this.flapWhileSinging = false;
 
         this.midiController = new MidiController(this);
-        let dropArea = new MidiDropArea(this);
 
         // let tts = new TTSController();
         // console.log(tts.GetGraphemes("Testing one two three 1 2 3"));
