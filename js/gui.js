@@ -11,8 +11,7 @@ class GUI {
             width: "80%",
             barMode: "above",
             align: "right",
-            opacity: "0.95",
-            useMenuBar: true
+            opacity: "0.95"
         });
 
         this.panel.Register({ 
