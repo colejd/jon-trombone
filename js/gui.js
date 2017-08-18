@@ -1,8 +1,11 @@
-let guify = require("guify");
-
 class GUI {
 
     Init(jon, container){
+
+        if(!guify) {
+            console.log("Guify was not found! Add it to your page to enable a GUI for this program.");
+            return;
+        }
 
         this.panel = new guify.GUI({
             title: "Jon-Trombone", 
