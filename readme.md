@@ -28,7 +28,7 @@ few simple commands. It's a Node project, so all you need to do is run
 Everything you need to run is in [/dist](/dist/). For an example
 of an integration, see the [test page](/testpage/index.html). 
 
-Jon-Trombone will use DAT.GUI if it's available to give you a way to fiddle with the parameters.
+Jon-Trombone will use [Guify](https://github.com/colejd/guify) if it's available to give you a way to fiddle with the parameters.
 
 
 # Credit
