@@ -1,8 +1,7 @@
 # Jon-Trombone
 *A poor use case for vocal synthesis*
 
-Demo at joncole.me/pages/jon-trombone.
-
+Demo at [joncole.me/pages/jon-trombone](joncole.me/pages/jon-trombone).
 
 # Introduction
 > I've always wanted to be a web app!
@@ -38,4 +37,4 @@ Jon-Trombone will use DAT.GUI if it's available to give you a way to fiddle with
 
 
 # License
-MIT License. See [license.md](license.md).
+MIT License. See [license.md](license.md) for details.
