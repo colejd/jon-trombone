@@ -1,7 +1,7 @@
 # Jon-Trombone
 *A poor use case for vocal synthesis*
 
-Demo at [joncole.me/pages/jon-trombone](joncole.me/pages/jon-trombone).
+Demo at [joncole.me/pages/jon-trombone](http://www.joncole.me/pages/jon-trombone).
 
 # Introduction
 > I've always wanted to be a web app!
