@@ -19,7 +19,7 @@ file of your own, just drag it onto my head.
 # Build Instructions
 I can't imagine why you'd want to do this, but you can build this yourself with a
 few simple commands. It's a Node project, so all you need to do is run 
-`node install` in the root, and then you can use the following Gulp tasks 
+`npm install` in the root, and then you can use the following Gulp tasks 
 (e.g. `gulp build`):
 
 * `build` - Builds the project into [/dist](/dist/)
