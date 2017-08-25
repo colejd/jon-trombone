@@ -5,14 +5,24 @@ import { JonTrombone } from "./jon-trombone.js";
 //import THREELib from "three-js";
 //var THREE = THREELib(); // return THREE JS
 
-let container = document.getElementById("jon-trombone-container");
+let Init = () => {
+    let container = document.getElementById("jon-trombone-container");
 
-if ( !Detector.HasWebGL() ) {
-    //exit("WebGL is not supported on this browser.");
-    console.log("WebGL is not supported on this browser.");
-    container.innerHTML = Detector.GetErrorHTML();
-    container.classList.add("no-webgl");
+    if ( !Detector.HasWebGL() ) {
+        //exit("WebGL is not supported on this browser.");
+        console.log("WebGL is not supported on this browser.");
+        container.innerHTML = Detector.GetErrorHTML();
+        container.classList.add("no-webgl");
+    }
+    else{
+        let jonTrombone = new JonTrombone(container);
+    }
 }
-else{
-    let jonTrombone = new JonTrombone(container);
+
+if (document.readyState === 'complete') {
+    Init();
+} else {
+    window.onload = () => {
+        Init();
+    }
 }
