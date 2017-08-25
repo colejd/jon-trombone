@@ -97,7 +97,8 @@ class JonTrombone {
 
         let light2 = new THREE.DirectionalLight(0xffffff, 1.0);
         light2.name = "Directional Light";
-        light2.position.set(0, 1, 0);
+        light2.position.set(0, 1, 1);
+        light2.target.position.set(0, 0, 0);
         this.scene.add(light2);
 
         // Load the Jon model and place it in the scene
