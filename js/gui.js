@@ -7,11 +7,11 @@ class GUI {
             return;
         }
 
-        this.panel = new guify.GUI({
+        this.panel = new guify({
             title: "Jon-Trombone", 
             theme: "dark", 
             root: container,
-            width: "80%",
+            width: 350,
             barMode: "above",
             align: "right",
             opacity: "0.95"
