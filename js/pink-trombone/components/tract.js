@@ -1,8 +1,9 @@
 class Tract {
 
-    constructor(trombone) {
+    constructor(trombone, glottis) {
         this.trombone = trombone;
-
+        this.glottis = glottis;
+        
         this.n = 44;
         this.bladeStart = 10;
         this.tipStart = 32;
@@ -264,7 +265,7 @@ class Tract {
     addTurbulenceNoiseAtIndex(turbulenceNoise, index, diameter) {   
         var i = Math.floor(index);
         var delta = index - i;
-        turbulenceNoise *= this.trombone.glottis.getNoiseModulator();
+        turbulenceNoise *= this.glottis.getNoiseModulator();
         var thinness0 = Math.clamp(8*(0.7-diameter),0,1);
         var openness = Math.clamp(30*(diameter-0.3), 0, 1);
         var noise0 = turbulenceNoise*(1-delta)*thinness0*openness;

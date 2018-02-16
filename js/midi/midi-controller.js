@@ -144,18 +144,24 @@ class MidiController {
         this.backup_settings["autoWobble"] = this.controller.trombone.autoWobble;
         this.controller.trombone.autoWobble = false;
 
-        this.backup_settings["addPitchVariance"] = this.controller.trombone.glottis.addPitchVariance;
-        this.controller.trombone.glottis.addPitchVariance = false;
+        for(let voice of this.controller.trombone.voices) {
+            let voiceBackup = {}
 
-        this.backup_settings["addTensenessVariance"] = this.controller.trombone.glottis.addTensenessVariance;
-        this.controller.trombone.glottis.addTensenessVariance = false;
+            voiceBackup["addPitchVariance"] = voice.glottis.addPitchVariance;
+            voice.glottis.addPitchVariance = false;
 
-        this.backup_settings["vibratoFrequency"] = this.controller.trombone.glottis.vibratoFrequency;
-        this.controller.trombone.glottis.vibratoFrequency = 0;
+            voiceBackup["addTensenessVariance"] = voice.glottis.addTensenessVariance;
+            voice.glottis.addTensenessVariance = false;
 
-        this.backup_settings["frequency"] = this.controller.trombone.glottis.UIFrequency;
+            voiceBackup["vibratoFrequency"] = voice.glottis.vibratoFrequency;
+            voice.glottis.vibratoFrequency = 0;
 
-        this.backup_settings["loudness"] = this.controller.trombone.glottis.loudness;
+            voiceBackup["frequency"] = voice.glottis.UIFrequency;
+
+            voiceBackup["loudness"] = voice.glottis.loudness;
+
+            this.backup_settings[`${voice.id}`] = voiceBackup
+        }
     }
 
     /**
@@ -165,13 +171,17 @@ class MidiController {
         if(!this.backup_settings) {
             return;
         }
-        
+
         this.controller.trombone.autoWobble = this.backup_settings["autoWobble"];
-        this.controller.trombone.glottis.addPitchVariance = this.backup_settings["addPitchVariance"];
-        this.controller.trombone.glottis.addTensenessVariance = this.backup_settings["addTensenessVariance"];
-        this.controller.trombone.glottis.vibratoFrequency = this.backup_settings["vibratoFrequency"];
-        this.controller.trombone.glottis.UIFrequency = this.backup_settings["frequency"];
-        this.controller.trombone.glottis.loudness = this.backup_settings["loudness"];
+
+        for(let voice of this.controller.trombone.voices) {
+            let backup = this.backup_settings[`${voice.id}`]
+            voice.glottis.addPitchVariance = backup["addPitchVariance"];
+            voice.glottis.addTensenessVariance = backup["addTensenessVariance"];
+            voice.glottis.vibratoFrequency = backup["vibratoFrequency"];
+            voice.glottis.UIFrequency = backup["frequency"];
+            voice.glottis.loudness = backup["loudness"];
+        }
 
         this.backup_settings = null;
     }

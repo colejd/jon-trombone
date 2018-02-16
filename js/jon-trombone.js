@@ -130,29 +130,49 @@ class JonTrombone {
             let notes = this.midiController.GetPitches();
             if(notes != this.lastNotes){
                 // Do the note
-                if(notes !== undefined && notes.length != 0){ 
+                if(notes !== undefined){ //&& notes.length != 0){ 
                     // Note on
                     // Play frequency
-                    let note = notes[0];
-                    if(notes.length > 1){
-                        //console.log ("chord");
+                    for (let i = 0; i < this.trombone.voices.length; i++){
+                        if (i >= notes.length) {
+                            if (!this.legato) this.trombone.voices[i].glottis.loudness = 0;
+                            this.trombone.voices[i].tractUI.SetLipsClosed(1);
+                            continue
+                        }
+
+                        this.trombone.voices[i].glottis.UIFrequency = this.midiController.MIDIToFrequency(notes[i].midi);
+                        this.trombone.voices[i].glottis.loudness = notes[i].velocity;
+
+                        this.trombone.voices[i].tractUI.SetLipsClosed(0);
                     }
-                    let freq = this.midiController.MIDIToFrequency(note.midi);
-                    //console.log(freq);
-                    this.trombone.glottis.UIFrequency = freq;
-                    this.trombone.glottis.loudness = note.velocity;
+                    // let note = notes[0];
+                    // if(notes.length > 1){
+                    //     //console.log ("chord");
+                    // }
+                    // let freq = this.midiController.MIDIToFrequency(note.midi);
+                    // //console.log(freq);
+                    // this.trombone.glottis.UIFrequency = freq;
+                    // this.trombone.glottis.loudness = note.velocity;
                     // Open jaw
                     this.jaw.position.z = this.jawShutZ + this.jawOpenOffset;
-                    this.trombone.tractUI.SetLipsClosed(0);
+                    for(let voice of this.trombone.voices) {
+                        voice.tractUI.SetLipsClosed(0);
+                    }
 
-                } else { 
-                    // Note off
-                    if (!this.legato) this.trombone.glottis.loudness = 0;
-                    // Close jaw
+                } 
+
+                if(notes.length == 0) {
                     this.jaw.position.z = this.jawShutZ;
-                    this.trombone.tractUI.SetLipsClosed(1);
-
+                    
                 }
+                // else { 
+                //     // Note off
+                //     if (!this.legato) this.trombone.glottis.loudness = 0;
+                //     // Close jaw
+                //     this.jaw.position.z = this.jawShutZ;
+                //     // this.trombone.tractUI.SetLipsClosed(1);
+
+                // }
 
                 this.lastNotes = notes;
             }
@@ -167,7 +187,9 @@ class JonTrombone {
             this.jaw.position.z = this.jawShutZ + (percent * this.jawOpenOffset);
 
             // Make the audio match the jaw position
-            this.trombone.tractUI.SetLipsClosed(1.0 - percent);
+            for(let voice of this.trombone.voices) {
+                voice.tractUI.SetLipsClosed(1.0 - percent);
+            }
 
         }
 
