@@ -5,7 +5,7 @@ class AudioSystem {
     constructor(trombone) {
         this.trombone = trombone;
 
-        this.blockLength = 512; // Turn this up if you get popping.
+        this.blockLength = 512;
         this.blockTime = 1;
         this.soundOn = false;
 
@@ -64,19 +64,6 @@ class AudioSystem {
 
         return source;
     }
-
-    // createNode() {
-    //     let buffer = this.audioContext.createBuffer(1, frameCount, this.trombone.sampleRate);
-
-        
-
-    //     var source = this.audioContext.createBufferSource();
-    //     source.buffer = buffer;
-    //     source.loop = true;
-
-    //     return source;
-    // }
-    
     
     doScriptProcessor(event, index) {
         var inputArray1 = event.inputBuffer.getChannelData(0);  // Glottis input
@@ -99,25 +86,25 @@ class AudioSystem {
             voice.tract.runStep(glottalOutput, inputArray2[j], lambda2);
             vocalOutput += voice.tract.lipOutput + voice.tract.noseOutput;
             outArray[j] = vocalOutput * 0.125;
-        }
-        // if(this.trombone.controller.notes !== undefined){
-        //     for (var noteIndex = 1; noteIndex < this.trombone.controller.notes.length; noteIndex++){
-        //         if(noteIndex > this.numVoices - 1) return;
-        //         let note = this.trombone.controller.notes[noteIndex];
-        //         //console.log(note);
 
-        //     }
-        // }
+            // Solves background hissing problem but introduces popping.
+            //if(voice.glottis.loudness == 0) outArray[j] = 0;
+        }
+
         voice.glottis.finishBlock();
         voice.tract.finishBlock();
     }
     
     mute() {
-        this.scriptProcessor.disconnect();
+        for(let processor of this.processors) {
+            processor.disconnect();
+        }
     }
     
     unmute() {
-        this.scriptProcessor.connect(this.audioContext.destination); 
+        for(let processor of this.processors) {
+            processor.connect(this.audioContext.destination);
+        }
     }
     
 }

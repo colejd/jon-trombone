@@ -159,6 +159,7 @@ class MidiController {
             voiceBackup["frequency"] = voice.glottis.UIFrequency;
 
             voiceBackup["loudness"] = voice.glottis.loudness;
+            voice.glottis.loudness = 0;
 
             this.backup_settings[`${voice.id}`] = voiceBackup
         }
