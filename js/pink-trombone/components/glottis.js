@@ -77,7 +77,7 @@ class Glottis {
     }
         
     runStep(lambda, noiseSource) {
-        var timeStep = 1.0 / this.trombone.sampleRate;
+        var timeStep = 1.0 / this.trombone.audioSystem.sampleRate;
         this.timeInWaveform += timeStep;
         this.totalTime += timeStep;
         if (this.timeInWaveform > this.waveformLength) 
@@ -133,6 +133,7 @@ class Glottis {
         this.intensity = Math.clamp(this.intensity, 0, 1);
     }
     
+    /// Queues up a single wave?
     setupWaveform(lambda) {
         this.frequency = this.oldFrequency*(1-lambda) + this.newFrequency*lambda;
         var tenseness = this.oldTenseness*(1-lambda) + this.newTenseness*lambda;

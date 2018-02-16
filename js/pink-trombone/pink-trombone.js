@@ -9,24 +9,23 @@ class PinkTrombone {
     constructor(controller){
         this.controller = controller;
         
-        this.sampleRate = 0;
         this.time = 0;
         this.alwaysVoice = true;
         this.autoWobble = true;
         this.noiseFreq = 500;
         this.noiseQ = 0.7;
-
-        this.AudioSystem = new AudioSystem(this);
-        this.AudioSystem.init();
         
-        this.Glottis = new Glottis(this);
-        this.Glottis.init();
+        this.glottis = new Glottis(this);
+        this.glottis.init();
 
-        this.Tract = new Tract(this);
-        this.Tract.init();
+        this.tract = new Tract(this);
+        this.tract.init();
 
-        this.TractUI = new TractUI(this);
-        this.TractUI.init();
+        this.tractUI = new TractUI(this);
+        this.tractUI.init();
+
+        this.audioSystem = new AudioSystem(this.glottis, this.tract);
+        this.audioSystem.init();
 
         //this.StartAudio();
         //this.SetMute(true);
@@ -36,11 +35,11 @@ class PinkTrombone {
 
     StartAudio() {
         this.muted = false;
-        this.AudioSystem.startSound();
+        this.audioSystem.startSound();
     }
 
     SetMute(doMute) {
-        doMute ? this.AudioSystem.mute() : this.AudioSystem.unmute();
+        doMute ? this.audioSystem.mute() : this.audioSystem.unmute();
         this.muted = doMute;
     }
 

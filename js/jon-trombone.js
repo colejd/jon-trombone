@@ -139,18 +139,18 @@ class JonTrombone {
                     }
                     let freq = this.midiController.MIDIToFrequency(note.midi);
                     //console.log(freq);
-                    this.trombone.Glottis.UIFrequency = freq;
-                    this.trombone.Glottis.loudness = note.velocity;
+                    this.trombone.glottis.UIFrequency = freq;
+                    this.trombone.glottis.loudness = note.velocity;
                     // Open jaw
                     this.jaw.position.z = this.jawShutZ + this.jawOpenOffset;
-                    this.trombone.TractUI.SetLipsClosed(0);
+                    this.trombone.tractUI.SetLipsClosed(0);
 
                 } else { 
                     // Note off
                     if (!this.legato) this.trombone.Glottis.loudness = 0;
                     // Close jaw
                     this.jaw.position.z = this.jawShutZ;
-                    this.trombone.TractUI.SetLipsClosed(1);
+                    this.trombone.tractUI.SetLipsClosed(1);
 
                 }
 
@@ -167,7 +167,7 @@ class JonTrombone {
             this.jaw.position.z = this.jawShutZ + (percent * this.jawOpenOffset);
 
             // Make the audio match the jaw position
-            this.trombone.TractUI.SetLipsClosed(1.0 - percent);
+            this.trombone.tractUI.SetLipsClosed(1.0 - percent);
 
         }
 

@@ -1,7 +1,9 @@
 class AudioSystem {  
 
-    constructor(trombone) {
-        this.trombone = trombone;
+    constructor(glottis, tract) {
+
+        this.glottis = glottis;
+        this.tract = tract;
 
         this.blockLength = 512;
         this.blockTime = 1;
@@ -12,9 +14,9 @@ class AudioSystem {
     init() {
         window.AudioContext = window.AudioContext||window.webkitAudioContext;
         this.audioContext = new window.AudioContext();
-        this.trombone.sampleRate = this.audioContext.sampleRate;
+        this.sampleRate = this.audioContext.sampleRate;
         
-        this.blockTime = this.blockLength/this.trombone.sampleRate;
+        this.blockTime = this.blockLength/this.sampleRate;
     }
     
     startSound() {
@@ -23,7 +25,7 @@ class AudioSystem {
         this.scriptProcessor.connect(this.audioContext.destination); 
         this.scriptProcessor.onaudioprocess = this.doScriptProcessor.bind(this);
     
-        var whiteNoise = this.createWhiteNoiseNode(2 * this.trombone.sampleRate); // 2 seconds of noise
+        var whiteNoise = this.createWhiteNoiseNode(2 * this.sampleRate); // 2 seconds of noise
         
         var aspirateFilter = this.audioContext.createBiquadFilter();
         aspirateFilter.type = "bandpass";
@@ -48,7 +50,7 @@ class AudioSystem {
     }
     
     createWhiteNoiseNode(frameCount) {
-        var myArrayBuffer = this.audioContext.createBuffer(1, frameCount, this.trombone.sampleRate);
+        var myArrayBuffer = this.audioContext.createBuffer(1, frameCount, this.sampleRate);
 
         var nowBuffering = myArrayBuffer.getChannelData(0);
         for (var i = 0; i < frameCount; i++) 
@@ -80,18 +82,20 @@ class AudioSystem {
         var inputArray1 = event.inputBuffer.getChannelData(0);  // Glottis input
         var inputArray2 = event.inputBuffer.getChannelData(1);  // Tract input
         var outArray = event.outputBuffer.getChannelData(0);  // Output (mono)
-        for (var j = 0, N = outArray.length; j < N; j++)
+
+        let N = outArray.length;
+        for (var j = 0; j < N; j++)
         {
-            var lambda1 = j/N;
+            var lambda1 = j/N; // Goes from 0 to 1
             var lambda2 = (j+0.5)/N;
-            var glottalOutput = this.trombone.Glottis.runStep(lambda1, inputArray1[j]); 
+            var glottalOutput = this.glottis.runStep(lambda1, inputArray1[j]); 
             
             var vocalOutput = 0;
             //Tract runs at twice the sample rate 
-            this.trombone.Tract.runStep(glottalOutput, inputArray2[j], lambda1);
-            vocalOutput += this.trombone.Tract.lipOutput + this.trombone.Tract.noseOutput;
-            this.trombone.Tract.runStep(glottalOutput, inputArray2[j], lambda2);
-            vocalOutput += this.trombone.Tract.lipOutput + this.trombone.Tract.noseOutput;
+            this.tract.runStep(glottalOutput, inputArray2[j], lambda1);
+            vocalOutput += this.tract.lipOutput + this.tract.noseOutput;
+            this.tract.runStep(glottalOutput, inputArray2[j], lambda2);
+            vocalOutput += this.tract.lipOutput + this.tract.noseOutput;
             outArray[j] = vocalOutput * 0.125;
         }
         // if(this.trombone.controller.notes !== undefined){
@@ -102,8 +106,8 @@ class AudioSystem {
 
         //     }
         // }
-        this.trombone.Glottis.finishBlock();
-        this.trombone.Tract.finishBlock();
+        this.glottis.finishBlock();
+        this.tract.finishBlock();
     }
     
     mute() {

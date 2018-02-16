@@ -216,7 +216,7 @@ class Tract {
     }
     
     finishBlock() {         
-        this.reshapeTract(this.trombone.AudioSystem.blockTime);
+        this.reshapeTract(this.trombone.audioSystem.blockTime);
         this.calculateReflections();
     }
     
@@ -237,7 +237,7 @@ class Tract {
             var amplitude = trans.strength * Math.pow(2, -trans.exponent * trans.timeAlive);
             this.R[trans.position] += amplitude/2;
             this.L[trans.position] += amplitude/2;
-            trans.timeAlive += 1.0/(this.trombone.sampleRate*2);
+            trans.timeAlive += 1.0/(this.trombone.audioSystem.sampleRate*2);
         }
         for (var i=this.transients.length-1; i>=0; i--)
         {
@@ -264,7 +264,7 @@ class Tract {
     addTurbulenceNoiseAtIndex(turbulenceNoise, index, diameter) {   
         var i = Math.floor(index);
         var delta = index - i;
-        turbulenceNoise *= this.trombone.Glottis.getNoiseModulator();
+        turbulenceNoise *= this.trombone.glottis.getNoiseModulator();
         var thinness0 = Math.clamp(8*(0.7-diameter),0,1);
         var openness = Math.clamp(30*(diameter-0.3), 0, 1);
         var noise0 = turbulenceNoise*(1-delta)*thinness0*openness;

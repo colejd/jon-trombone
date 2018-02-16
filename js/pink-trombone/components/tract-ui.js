@@ -27,7 +27,7 @@ class TractUI
     }
     
     init() {
-        let Tract = this.trombone.Tract;
+        let Tract = this.trombone.tract;
 
         this.setRestDiameter();
         for (var i=0; i<Tract.n; i++) 
@@ -41,7 +41,7 @@ class TractUI
     }
         
     getIndex(x,y) {
-        let Tract = this.trombone.Tract;
+        let Tract = this.trombone.tract;
 
         var xx = x-this.originX; var yy = y-this.originY;
         var angle = Math.atan2(yy, xx);
@@ -55,7 +55,7 @@ class TractUI
     }
     
     setRestDiameter() {
-        let Tract = this.trombone.Tract;
+        let Tract = this.trombone.tract;
 
         for (var i=Tract.bladeStart; i<Tract.lipStart; i++)
         {
@@ -74,7 +74,7 @@ class TractUI
      */
     SetLipsClosed(progress) {
 
-        let Tract = this.trombone.Tract;
+        let Tract = this.trombone.tract;
         
         this.setRestDiameter();
         for (var i=0; i<Tract.n; i++) Tract.targetDiameter[i] = Tract.restDiameter[i];    
