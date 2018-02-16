@@ -127,14 +127,14 @@ class JonTrombone {
 
         if(this.midiController.playing){
 
-            this.notes = this.midiController.GetPitches();
-            if(this.notes != this.lastNotes){
+            let notes = this.midiController.GetPitches();
+            if(notes != this.lastNotes){
                 // Do the note
-                if(this.notes !== undefined && this.notes.length != 0){ 
+                if(notes !== undefined && notes.length != 0){ 
                     // Note on
                     // Play frequency
-                    let note = this.notes[0];
-                    if(this.notes.length > 1){
+                    let note = notes[0];
+                    if(notes.length > 1){
                         //console.log ("chord");
                     }
                     let freq = this.midiController.MIDIToFrequency(note.midi);
@@ -147,14 +147,14 @@ class JonTrombone {
 
                 } else { 
                     // Note off
-                    if (!this.legato) this.trombone.Glottis.loudness = 0;
+                    if (!this.legato) this.trombone.glottis.loudness = 0;
                     // Close jaw
                     this.jaw.position.z = this.jawShutZ;
                     this.trombone.tractUI.SetLipsClosed(1);
 
                 }
 
-                this.lastNotes = this.notes;
+                this.lastNotes = notes;
             }
 
         }
