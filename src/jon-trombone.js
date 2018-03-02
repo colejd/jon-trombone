@@ -1,4 +1,5 @@
 import { ModelLoader } from "./utils/model-loader.js";
+import { StartOverlay } from "./utils/start-overlay.js";
 import { PinkTrombone } from "./pink-trombone/pink-trombone.js";
 import { MidiController } from "./midi/midi-controller.js";
 import { TTSController } from "./tts/tts-controller.js";
@@ -60,6 +61,8 @@ class JonTrombone {
 
         this.SetUpThree();
         this.SetUpScene();
+
+        let startOverlay = new StartOverlay(this.container, this.trombone.audioSystem.audioContext);
 
         // Start the update loop
         this.OnUpdate();

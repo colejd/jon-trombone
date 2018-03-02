@@ -2,11 +2,11 @@
   "name": "jon-trombone",
   "version": "1.1.0",
   "description": "Pink Trombone hooked up to a 3D scan of Jon",
-  "main": "js/main.js",
+  "main": "dist/main.js",
   "scripts": {
-    "build": "webpack --mode production",
-    "dev": "webpack --progress --colors --mode development",
-    "dev:watch": "npm run-script dev -- --watch & webpack-dev-server",
+    "build": "webpack --mode production --colors",
+    "dev": "webpack --mode development --colors",
+    "dev:watch": "webpack-dev-server --mode development --progress",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jonathan Cole",
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "midiconvert": "^0.4.3",
+    "startaudiocontext": "^1.2.1",
     "three-js": "^79.0.0"
   }
 }

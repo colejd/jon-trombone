@@ -18,6 +18,16 @@ let plugins = [
 let outputFile;
 
 const config = {
+  //entry: '/src/index.js',
+  devtool: 'source-map',
+  output: {
+    path: path.resolve(__dirname, 'dist/'),
+    filename: libraryName + '.js',
+    library: libraryName,
+    libraryTarget: 'umd',
+    umdNamedDefine: true,
+    publicPath: path.resolve(__dirname, '/dist/')
+  },
   module: {
     rules: [
       { // Process js files
@@ -40,7 +50,11 @@ const config = {
   devServer: {
     compress: true,
     open: true,
-    openPage: 'testpage'
+    openPage: 'testpage',
+    publicPath: path.resolve(__dirname, '/dist/')
+  },
+  watchOptions: {
+    ignored: /node_modules/
   }
 };
 
