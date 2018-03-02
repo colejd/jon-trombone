@@ -3,6 +3,7 @@
 
 Demo at [joncole.me/pages/jon-trombone](http://www.joncole.me/pages/jon-trombone).
 
+
 # Introduction
 > I've always wanted to be a web app!
 
@@ -19,11 +20,11 @@ file of your own, just drag it onto my head.
 # Build Instructions
 I can't imagine why you'd want to do this, but you can build this yourself with a
 few simple commands. It's a Node project, so all you need to do is run 
-`npm install` in the root, and then you can use the following Gulp tasks 
-(e.g. `gulp build`):
+`npm install` in the root, and then you can use the following npm tasks 
+(e.g. `npm run build`):
 
 * `build` - Builds the project into [/dist](/dist/)
-* `preview` - Builds and presents the project's test page (live reloads)
+* `dev:watch` - Builds and presents the project's test page (live reloads)
 
 Everything you need to run is in [/dist](/dist/). For an example
 of an integration, see the [test page](/testpage/index.html). 

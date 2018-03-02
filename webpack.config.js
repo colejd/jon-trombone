@@ -1,9 +1,7 @@
 /* global __dirname, require, module*/
 
 const webpack = require('webpack');
-// const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const path = require('path');
-//const env = require('yargs').argv.env; // use --env with webpack 2
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 // Get values from package.json
@@ -19,23 +17,7 @@ let plugins = [
 ];
 let outputFile;
 
-// if (env === 'build') {
-//   //plugins.push(new UglifyJsPlugin({ minimize: true }));
-//   outputFile = libraryName + '.min.js';
-// } else {
-//   outputFile = libraryName + '.js';
-// }
-
 const config = {
-//   entry: __dirname + '/js/main.js',
-//   devtool: 'source-map',
-//   output: {
-//     path: __dirname + '/dist',
-//     filename: outputFile,
-//     library: libraryName,
-//     libraryTarget: 'umd',
-//     umdNamedDefine: true
-//   },
   module: {
     rules: [
       { // Process js files
