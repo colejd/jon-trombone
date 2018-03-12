@@ -1,3 +1,5 @@
+import StartAudioContext from 'startaudiocontext'
+
 class StartOverlay {
 
     constructor(container, audioContext) {
@@ -16,35 +18,18 @@ class StartOverlay {
             background-color: rgba(0, 0, 0, 0.5);
         `
 
-        overlay.addEventListener("touchstart", () => {
-            // create empty buffer
-            var buffer = audioContext.createBuffer(1, 1, 22050)
-            var source = audioContext.createBufferSource()
-            source.buffer = buffer
-            // connect to output (your speakers)
-            source.connect(audioContext.destination)
-            // play the file
-            source.noteOn(0)
+        overlay.innerHTML = `
+            <div style="position: absolute; margin: auto; top: 0; right: 0; bottom: 0; left: 0; width: 100px; height: 100px;">
+                <p class="jon-trombone-audio-overlay-text">
+                    Tap here to begin.
+                </p>
+            </div>
+        `
+
+        StartAudioContext(audioContext, overlay, () => {
             console.log("Unlocked iOS audio")
-
-            // Remove the overlay
             overlay.remove()
-        }, false)
-
-        overlay.addEventListener("click", () => {
-            // create empty buffer
-            var buffer = audioContext.createBuffer(1, 1, 22050)
-            var source = audioContext.createBufferSource()
-            source.buffer = buffer
-            // connect to output (your speakers)
-            source.connect(audioContext.destination)
-            // play the file
-            source.noteOn(0)
-            console.log("Unlocked iOS audio")
-
-            // Remove the overlay
-            overlay.remove()
-        }, false)
+        })
 
     }
 
