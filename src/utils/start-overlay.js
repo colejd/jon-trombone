@@ -3,6 +3,12 @@ import StartAudioContext from 'startaudiocontext'
 class StartOverlay {
 
     constructor(container, audioContext) {
+
+        var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+        if (!iOS) {
+            return
+        }
+
         this.container = container
 
         let overlay = document.createElement("div")
@@ -15,15 +21,29 @@ class StartOverlay {
             left: 0;
             top: 0;
             display: block;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.75);
         `
 
-        overlay.innerHTML = `
-            <div style="position: absolute; margin: auto; top: 0; right: 0; bottom: 0; left: 0; width: 100px; height: 100px;">
-                <p class="jon-trombone-audio-overlay-text">
-                    Tap here to begin.
-                </p>
-            </div>
+        let overlayText = document.createElement("div")
+        overlay.appendChild(overlayText);
+        overlayText.style.cssText = `
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%); 
+
+            font-weight: bold;
+            font-size: 50px;
+
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+        `
+        overlayText.innerHTML = `
+                Tap here to begin.
         `
 
         StartAudioContext(audioContext, overlay, () => {
