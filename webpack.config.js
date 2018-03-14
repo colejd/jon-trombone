@@ -3,6 +3,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const WriteFilePlugin = require('write-file-webpack-plugin')
 
 // Get values from package.json
 var package = require("./package.json");
@@ -10,10 +11,11 @@ var package = require("./package.json");
 let libraryName = package.name;
 
 let plugins = [
-    new CopyWebpackPlugin([
-        { from: '/resources/**/*', to: '/dist/resources' },
-        { from: '/dependencies/**/*', to: '/dist/dependencies' }
-    ], {})
+  new WriteFilePlugin(),
+  new CopyWebpackPlugin([
+      { from: 'resources', to: 'resources' },
+      { from: 'dependencies', to: 'dependencies' }
+  ], {})
 ];
 let outputFile;
 
