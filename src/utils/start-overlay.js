@@ -33,6 +33,7 @@ class StartOverlay {
 
             font-weight: bold;
             font-size: 50px;
+            color: white;
 
             -webkit-touch-callout: none; /* iOS Safari */
             -webkit-user-select: none; /* Safari */
