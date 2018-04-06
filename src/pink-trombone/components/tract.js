@@ -13,7 +13,6 @@ class Tract {
         this.reflection = [];
         this.junctionOutputR = [];
         this.junctionOutputL = [];
-        this.maxAmplitude = [];
         this.diameter = [];
         this.restDiameter = [];
         this.targetDiameter = [];
@@ -53,7 +52,6 @@ class Tract {
         this.junctionOutputR = new Float64Array(this.n+1);
         this.junctionOutputL = new Float64Array(this.n+1);
         this.A =new Float64Array(this.n);
-        this.maxAmplitude = new Float64Array(this.n);
         
         this.noseLength = Math.floor(28*this.n/44)
         this.noseStart = this.n-this.noseLength + 1;
@@ -64,7 +62,6 @@ class Tract {
         this.noseReflection = new Float64Array(this.noseLength+1);
         this.noseDiameter = new Float64Array(this.noseLength);
         this.noseA = new Float64Array(this.noseLength);
-        this.noseMaxAmplitude = new Float64Array(this.noseLength);
         for (var i=0; i<this.noseLength; i++)
         {
             var diameter;
@@ -141,7 +138,6 @@ class Tract {
     }
     
     runStep(glottalOutput, turbulenceNoise, lambda) {
-        var updateAmplitudes = (Math.random()<0.1);
     
         //mouth
         this.processTransients();
@@ -176,12 +172,6 @@ class Tract {
             //this.R[i] = Math.clamp(this.junctionOutputR[i] * this.fade, -1, 1);
             //this.L[i] = Math.clamp(this.junctionOutputL[i+1] * this.fade, -1, 1);    
             
-            if (updateAmplitudes)
-            {   
-                var amplitude = Math.abs(this.R[i]+this.L[i]);
-                if (amplitude > this.maxAmplitude[i]) this.maxAmplitude[i] = amplitude;
-                else this.maxAmplitude[i] *= 0.999;
-            }
         }
 
         this.lipOutput = this.R[this.n-1];
@@ -203,13 +193,7 @@ class Tract {
             
             //this.noseR[i] = Math.clamp(this.noseJunctionOutputR[i] * this.fade, -1, 1);
             //this.noseL[i] = Math.clamp(this.noseJunctionOutputL[i+1] * this.fade, -1, 1);    
-            
-            if (updateAmplitudes)
-            {
-                var amplitude = Math.abs(this.noseR[i]+this.noseL[i]);
-                if (amplitude > this.noseMaxAmplitude[i]) this.noseMaxAmplitude[i] = amplitude;
-                else this.noseMaxAmplitude[i] *= 0.999;
-            }
+
         }
 
         this.noseOutput = this.noseR[this.noseLength-1];
