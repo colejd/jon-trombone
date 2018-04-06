@@ -73,7 +73,7 @@ class MidiController {
             item.noteOn <= time && time <= item.noteOff);
     }
 
-    PlaySong(track = 5){
+    PlaySong(track = 3){
         if(this.playing){
             return;
         }
@@ -81,7 +81,7 @@ class MidiController {
         // If no song is specified, load a song
         if(!this.midi){
             console.log("No MIDI is loaded. Loading an example...");
-            this.LoadSong('../resources/midi/un-owen-was-her.mid', () => {
+            this.LoadSong('../resources/midi/bohemian-rhapsody.mid', () => {
                 this.PlaySong();
             });
             return;

@@ -13709,7 +13709,7 @@ var MidiController = function () {
         value: function PlaySong() {
             var _this2 = this;
 
-            var track = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 5;
+            var track = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3;
 
             if (this.playing) {
                 return;
@@ -13718,7 +13718,7 @@ var MidiController = function () {
             // If no song is specified, load a song
             if (!this.midi) {
                 console.log("No MIDI is loaded. Loading an example...");
-                this.LoadSong('../resources/midi/un-owen-was-her.mid', function () {
+                this.LoadSong('../resources/midi/bohemian-rhapsody.mid', function () {
                     _this2.PlaySong();
                 });
                 return;
@@ -13941,7 +13941,7 @@ var AudioSystem = function () {
 
             var _loop = function _loop(i) {
                 //scriptProcessor may need a dummy input channel on iOS
-                var scriptProcessor = _this.audioContext.createScriptProcessor(_this.blockLength, 2, 2);
+                var scriptProcessor = _this.audioContext.createScriptProcessor(_this.blockLength, 2, 1);
                 scriptProcessor.connect(_this.audioContext.destination);
                 scriptProcessor.onaudioprocess = function (e) {
                     _this.doScriptProcessor(e, i);
@@ -14007,7 +14007,6 @@ var AudioSystem = function () {
                 var lambda1 = j / N; // Goes from 0 to 1
                 var lambda2 = (j + 0.5) / N;
                 var glottalOutput = voice.glottis.runStep(lambda1, inputArray1[j]);
-                // outArray[j] = glottalOutput;
 
                 var vocalOutput = 0;
                 //Tract runs at twice the sample rate 
@@ -14442,7 +14441,6 @@ var Tract = function () {
         this.reflection = [];
         this.junctionOutputR = [];
         this.junctionOutputL = [];
-        this.maxAmplitude = [];
         this.diameter = [];
         this.restDiameter = [];
         this.targetDiameter = [];
@@ -14481,7 +14479,6 @@ var Tract = function () {
             this.junctionOutputR = new Float64Array(this.n + 1);
             this.junctionOutputL = new Float64Array(this.n + 1);
             this.A = new Float64Array(this.n);
-            this.maxAmplitude = new Float64Array(this.n);
 
             this.noseLength = Math.floor(28 * this.n / 44);
             this.noseStart = this.n - this.noseLength + 1;
@@ -14492,7 +14489,6 @@ var Tract = function () {
             this.noseReflection = new Float64Array(this.noseLength + 1);
             this.noseDiameter = new Float64Array(this.noseLength);
             this.noseA = new Float64Array(this.noseLength);
-            this.noseMaxAmplitude = new Float64Array(this.noseLength);
             for (var i = 0; i < this.noseLength; i++) {
                 var diameter;
                 var d = 2 * (i / this.noseLength);
@@ -14562,7 +14558,6 @@ var Tract = function () {
     }, {
         key: "runStep",
         value: function runStep(glottalOutput, turbulenceNoise, lambda) {
-            var updateAmplitudes = Math.random() < 0.1;
 
             //mouth
             this.processTransients();
@@ -14594,11 +14589,6 @@ var Tract = function () {
 
                 //this.R[i] = Math.clamp(this.junctionOutputR[i] * this.fade, -1, 1);
                 //this.L[i] = Math.clamp(this.junctionOutputL[i+1] * this.fade, -1, 1);    
-
-                if (updateAmplitudes) {
-                    var amplitude = Math.abs(this.R[i] + this.L[i]);
-                    if (amplitude > this.maxAmplitude[i]) this.maxAmplitude[i] = amplitude;else this.maxAmplitude[i] *= 0.999;
-                }
             }
 
             this.lipOutput = this.R[this.n - 1];
@@ -14618,11 +14608,6 @@ var Tract = function () {
 
                 //this.noseR[i] = Math.clamp(this.noseJunctionOutputR[i] * this.fade, -1, 1);
                 //this.noseL[i] = Math.clamp(this.noseJunctionOutputL[i+1] * this.fade, -1, 1);    
-
-                if (updateAmplitudes) {
-                    var amplitude = Math.abs(this.noseR[i] + this.noseL[i]);
-                    if (amplitude > this.noseMaxAmplitude[i]) this.noseMaxAmplitude[i] = amplitude;else this.noseMaxAmplitude[i] *= 0.999;
-                }
             }
 
             this.noseOutput = this.noseR[this.noseLength - 1];
