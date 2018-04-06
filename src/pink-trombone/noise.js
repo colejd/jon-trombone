@@ -151,7 +151,9 @@ class Noise {
 
 }
 
-const singleton = new Noise();
-Object.freeze(singleton);
+export { Noise };
 
-export default singleton;
+// const singleton = new Noise();
+// Object.freeze(singleton);
+
+// export default singleton;

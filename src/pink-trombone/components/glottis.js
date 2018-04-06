@@ -1,9 +1,13 @@
-import noise from "../noise.js";
+//import noise from "../noise.js";
+
+import { Noise } from "../noise.js";
 
 class Glottis {
 
-    constructor(trombone) {
+    constructor(trombone, id) {
         this.trombone = trombone;
+        this.noise = new Noise();
+        this.noise.seed(Date.now() + id);
 
         this.timeInWaveform = 0;
         this.oldFrequency = 140;
@@ -23,12 +27,6 @@ class Glottis {
         this.x = 240;
         this.y = 530;
 
-        this.keyboardTop = 500;
-        this.keyboardLeft = 0;
-        this.keyboardWidth = 600;
-        this.keyboardHeight = 100;
-        this.semitones = 20;
-        this.marks = [0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0];
         this.baseNote = 87.3071; //F
 
         this.output;
@@ -43,38 +41,6 @@ class Glottis {
     init() {
         this.setupWaveform(0);
     }
-    
-    handleTouches() {
-        if (this.touch != 0 && !this.touch.alive) this.touch = 0;
-        
-        if (this.touch == 0)
-        {        
-            for (var j=0; j<UI.touchesWithMouse.length; j++)  
-            {
-                var touch = UI.touchesWithMouse[j];
-                if (!touch.alive) continue;
-                if (touch.y<this.keyboardTop) continue;
-                this.touch = touch;
-            }    
-        }
-        
-        if (this.touch != 0)
-        {
-            var local_y = this.touch.y -  this.keyboardTop-10;
-            var local_x = this.touch.x - this.keyboardLeft;
-            local_y = Math.clamp(local_y, 0, this.keyboardHeight-26);
-            var semitone = this.semitones * local_x / this.keyboardWidth + 0.5;
-            Glottis.UIFrequency = this.baseNote * Math.pow(2, semitone/12);
-            if (Glottis.intensity == 0) Glottis.smoothFrequency = Glottis.UIFrequency;
-            //Glottis.UIRd = 3*local_y / (this.keyboardHeight-20);
-            var t = Math.clamp(1-local_y / (this.keyboardHeight-28), 0, 1);
-            Glottis.UITenseness = 1-Math.cos(t*Math.PI*0.5);
-            Glottis.loudness = Math.pow(Glottis.UITenseness, 0.25);
-            this.x = this.touch.x;
-            this.y = local_y + this.keyboardTop+10;
-        }
-        Glottis.isTouched = (this.touch != 0);
-    }
         
     runStep(lambda, noiseSource) {
         var timeStep = 1.0 / this.trombone.audioSystem.sampleRate;
@@ -87,7 +53,7 @@ class Glottis {
         }
         var out = this.normalizedLFWaveform(this.timeInWaveform/this.waveformLength);
         var aspiration = this.intensity*(1.0-Math.sqrt(this.UITenseness))*this.getNoiseModulator()*noiseSource;
-        aspiration *= 0.2 + 0.02 * noise.simplex1(this.totalTime * 1.99);
+        aspiration *= 0.2 + 0.02 * this.noise.simplex1(this.totalTime * 1.99);
         out += aspiration;
         return out;
     }
@@ -103,14 +69,14 @@ class Glottis {
         if (this.addPitchVariance) {
             // Add small imperfections to the vocal output
             vibrato += this.vibratoAmount * Math.sin(2*Math.PI * this.totalTime *this.vibratoFrequency);          
-            vibrato += 0.02 * noise.simplex1(this.totalTime * 4.07);
-            vibrato += 0.04 * noise.simplex1(this.totalTime * 2.15);
+            vibrato += 0.02 * this.noise.simplex1(this.totalTime * 4.07);
+            vibrato += 0.04 * this.noise.simplex1(this.totalTime * 2.15);
         }
         
         if (this.trombone.autoWobble)
         {
-            vibrato += 0.2 * noise.simplex1(this.totalTime * 0.98);
-            vibrato += 0.4 * noise.simplex1(this.totalTime * 0.5);
+            vibrato += 0.2 * this.noise.simplex1(this.totalTime * 0.98);
+            vibrato += 0.4 * this.noise.simplex1(this.totalTime * 0.5);
         }
 
         if (this.UIFrequency>this.smoothFrequency) 
@@ -122,7 +88,7 @@ class Glottis {
         this.oldTenseness = this.newTenseness;
 
         if (this.addTensenessVariance)
-            this.newTenseness = this.UITenseness + 0.1*noise.simplex1(this.totalTime*0.46)+0.05*noise.simplex1(this.totalTime*0.36);
+            this.newTenseness = this.UITenseness + 0.1*this.noise.simplex1(this.totalTime*0.46)+0.05*this.noise.simplex1(this.totalTime*0.36);
         else
             this.newTenseness = this.UITenseness;
 

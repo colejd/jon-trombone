@@ -9,7 +9,7 @@ class Voice {
     constructor(trombone, id) {
         this.id = id;
 
-        this.glottis = new Glottis(trombone);
+        this.glottis = new Glottis(trombone, id);
         this.glottis.init();
 
         this.tract = new Tract(trombone, this.glottis);
